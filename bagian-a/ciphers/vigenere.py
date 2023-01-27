@@ -6,7 +6,7 @@ EXTENDED = 2
 ENCRYPT = 0
 DECRYPT = 1
 
-def parseKey(text: str, key: str, type=STANDARD, operation=ENCRYPT) -> str:
+def parseKey(text: str, key: str, operation=ENCRYPT, type=STANDARD) -> str:
     """Parse key to be the same length as text."""
     if type == STANDARD or type == EXTENDED:
         if len(key) < len(text):
@@ -21,54 +21,39 @@ def parseKey(text: str, key: str, type=STANDARD, operation=ENCRYPT) -> str:
                 key += sp.numberToAlphabet([(textKeyNum[i] - sp.alphabetToNumber(key[i])[0]) % 26])
     return key
 
-def encrypt(plaintext: str, key: str, type=STANDARD) -> dict:
-    """Encrypt plaintext using Vigenere cipher with key."""
+def cipher(text: str, key: str, operation=ENCRYPT, type=STANDARD) -> dict:
+    """Encrypt/decrypt plaintext using Vigenere cipher with key."""
 
-    # encrypt
-    ciphertext = ''
+    result = ''
     if type == STANDARD or type == AUTOKEY:
-        plaintext = sp.stringToAlphabet(plaintext)
-        key = parseKey(plaintext, sp.stringToAlphabet(key), type, ENCRYPT)
+        text = sp.stringToAlphabet(text)
+        key = parseKey(text, sp.stringToAlphabet(key), operation, type)
 
-        plainNum = sp.alphabetToNumber(sp.stringToAlphabet(plaintext))
+        textNum = sp.alphabetToNumber(sp.stringToAlphabet(text))
         keyNum = sp.alphabetToNumber(sp.stringToAlphabet(key))
-
-        ciphertext = sp.numberToAlphabet([(plainNum[i] + keyNum[i]) % 26 for i in range(len(plainNum))])
+        if operation == ENCRYPT:
+            result = sp.numberToAlphabet([(textNum[i] + keyNum[i]) % 26 for i in range(len(textNum))])
+        elif operation == DECRYPT:
+            result = sp.numberToAlphabet([(textNum[i] - keyNum[i]) % 26 for i in range(len(textNum))])
     elif type == EXTENDED:
-        plainASCII = sp.stringToASCII(plaintext)
+        key = parseKey(text, key, operation, type)
+
+        textASCII = sp.stringToASCII(textASCII)
         keyASCII = sp.stringToASCII(key)
-        ciphertext = sp.ASCIItoString([(plainASCII[i] + keyASCII[i]) % 256 for i in range(len(plainASCII))])
+        if operation == ENCRYPT:
+            result = sp.ASCIItoString([(textASCII[i] + keyASCII[i]) % 256 for i in range(len(textASCII))])
+        elif operation == DECRYPT:
+            result = sp.ASCIItoString([(textASCII[i] - keyASCII[i]) % 256 for i in range(len(textASCII))])
 
-    return {'key': key, 'plaintext': plaintext, 'result': ciphertext}
+    return {'key': key, 'text': text, 'result': result}
 
-def decrypt(ciphertext: str, key: str, type=STANDARD) -> dict:
-    """Decrypt ciphertext using Vigenere cipher with key."""
-    
-    # decrypt
-    plaintext = ''
-    if type == STANDARD or type == AUTOKEY:
-        ciphertext = sp.stringToAlphabet(ciphertext)
-        key = parseKey(ciphertext, sp.stringToAlphabet(key), type, DECRYPT)
-
-        cipherNum = sp.alphabetToNumber(sp.stringToAlphabet(ciphertext))
-        keyNum = sp.alphabetToNumber(sp.stringToAlphabet(key))
-
-        plaintext = sp.numberToAlphabet([(cipherNum[i] - keyNum[i]) % 26 for i in range(len(cipherNum))])
-    elif type == EXTENDED:
-        cipherASCII = sp.stringToASCII(ciphertext)
-        keyASCII = sp.stringToASCII(key)
-        plaintext = sp.ASCIItoString([(cipherASCII[i] - keyASCII[i]) % 256 for i in range(len(cipherASCII))])
-
-    return {'key': key, 'ciphertext': ciphertext, 'result': plaintext}
-
-
-# pt = """Dinas Pendidikan Kota Ternate meminta kepada pihak sekolah dan
-# orang tua siswa untuk jenjang pendidikan SD dan SMP se-Kota Ternate
-# untuk melarang para siswa membawa permainan lato-lato yang sedang
-# tren itu ke sekolah, karena akan mengganggu kegiatan belajar mengajar
-# yang dinilai berbahaya sehingga mengantisipasi kecelakaan bagi anak di
-# daerah itu."""
-# ct = """VMYALHYAGIGQXAFZSGDBHZXAGOAXMBRKNKXTMHMXVAAUWTKRLPPKAXGVKBRTBDSVGNAHTMOKBMFFAHTIYXMMQRKNTHHQDVVUZSRCRWAGWDCSXOIGTNODRLTVUAZJKDEDIJWNSTMSAOIHARYEUOAJLPXFXABBYNYGLSOAGURRRTAXXKRYXBSYIAEKVWRKOVAUWEEKTANQGHWITOGTNTHYVEPIRFEAHEUAAYRZKQONRLRGBRXEIUIJAAFLZOGNAKEFKHVGOYIBEFOKRVMDIZASVLEIMLNKKDVEAKZAUIDX"""
-# k = "selatsunda"
-# print(encrypt(pt,k,AUTOKEY))
-# print(decrypt(ct,k,AUTOKEY))
+pt = """Dinas Pendidikan Kota Ternate meminta kepada pihak sekolah dan
+orang tua siswa untuk jenjang pendidikan SD dan SMP se-Kota Ternate
+untuk melarang para siswa membawa permainan lato-lato yang sedang
+tren itu ke sekolah, karena akan mengganggu kegiatan belajar mengajar
+yang dinilai berbahaya sehingga mengantisipasi kecelakaan bagi anak di
+daerah itu."""
+ct = """VMYALHYAGIGQXAFZSGDBHZXAGOAXMBRKNKXTMHMXVAAUWTKRLPPKAXGVKBRTBDSVGNAHTMOKBMFFAHTIYXMMQRKNTHHQDVVUZSRCRWAGWDCSXOIGTNODRLTVUAZJKDEDIJWNSTMSAOIHARYEUOAJLPXFXABBYNYGLSOAGURRRTAXXKRYXBSYIAEKVWRKOVAUWEEKTANQGHWITOGTNTHYVEPIRFEAHEUAAYRZKQONRLRGBRXEIUIJAAFLZOGNAKEFKHVGOYIBEFOKRVMDIZASVLEIMLNKKDVEAKZAUIDX"""
+k = "selatsunda"
+print(cipher(pt,k,ENCRYPT,AUTOKEY))
+# print(cipher(ct,k,DECRYPT,AUTOKEY))
