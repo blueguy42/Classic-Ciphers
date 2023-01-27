@@ -3,6 +3,7 @@ import stringparser as sp
 STANDARD = 0
 AUTOKEY = 1
 EXTENDED = 2
+
 ENCRYPT = 0
 DECRYPT = 1
 
@@ -46,14 +47,3 @@ def cipher(text: str, key: str, operation=ENCRYPT, type=STANDARD) -> dict:
             result = sp.ASCIItoString([(textASCII[i] - keyASCII[i]) % 256 for i in range(len(textASCII))])
 
     return {'key': key, 'text': text, 'result': result}
-
-pt = """Dinas Pendidikan Kota Ternate meminta kepada pihak sekolah dan
-orang tua siswa untuk jenjang pendidikan SD dan SMP se-Kota Ternate
-untuk melarang para siswa membawa permainan lato-lato yang sedang
-tren itu ke sekolah, karena akan mengganggu kegiatan belajar mengajar
-yang dinilai berbahaya sehingga mengantisipasi kecelakaan bagi anak di
-daerah itu."""
-ct = """VMYALHYAGIVMVAGCIGDTWVYAMWGRPIFXLKXHUQDPALLKLWEBOAZHLNHJUAJTMEDILOUHQTMOUEGBUAJPWROIWAENQSVHLNLEJFHKGXLTXJHNWEMREUDEYYDRSRRPTJUFLSOEXEFTUJDPWVXABFUAOALSWAMGSNQGKIOAGYNEHNAXFKXKYXRLSLVAKWHNDKSRXEGYANQGYYVEZAUGDNTIWACSLZHNYEUAKQUAJDARTLTAVRUBSLLYTKYULNYKLMXFANQTAWTPTKCXHCWPLKTSHODGAEYADVCQDEJESIMM"""
-k = "selatsunda"
-print(cipher(pt,k,ENCRYPT,STANDARD))
-# print(cipher(ct,k,DECRYPT,STANDARD))
