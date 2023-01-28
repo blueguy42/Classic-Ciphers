@@ -20,7 +20,7 @@ app.config['MAX_CONTENT_LENGTH'] = 120 * 1024 * 1024
 
 @app.route("/")
 def home():
-    return render_template("index.html")
+    return render_template("home.html")
 
 @app.route('/input/<filename>')
 def display_org(filename):
@@ -29,6 +29,50 @@ def display_org(filename):
 @app.route('/compressed/<filename>')
 def display_comp(filename):
     return redirect(url_for('static', filename='file/output/' + app.config['PREFIX_OUTPUT']+ filename), code=301)
+
+@app.route('/vigenere', methods=['GET', 'POST'])
+def vigenere():
+    if request.method == 'POST':
+        print("1")
+        type = request.form['type']
+        operation = request.form['operation']
+        input_method = request.form['input_method']
+        msg = request.form['msg']
+        key = request.form['key']
+        print(type)
+        print(operation)
+        print(input_method)
+        print(msg)
+        print(key)
+
+    else:
+        print("2")
+    return render_template("vigenere.html")
+
+@app.route('/affine')
+def affine():
+    return render_template("affine.html")
+
+@app.route('/playfair')
+def playfair(): 
+    return render_template("playfair.html")
+
+@app.route('/hill', methods=['GET', 'POST'])
+def hill():
+    if request.method == 'POST':
+        print("1")
+        size = int(request.form['size'])
+        key = request.form['key']
+        text = request.form['text']
+        print(size)
+        print(key)
+        print(text)
+    else:
+        print("2")
+    
+    return render_template("hill.html")
+    
+
 
 if __name__ == "__main__":
     app.run(debug=True)

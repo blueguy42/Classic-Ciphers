@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HILL</title>
+</head>
+<body>
+    {% include 'header.html' %}
+    <h1>Hill</h1>
+
+    <form action="{{ url_for('hill')}}" method="post" enctype="multipart/form-data">
+        <label for="size">Size</label>
+        <input type="number" name="size" id="size">
+        <label for="key">Key</label>
+        <input type="text" name="key" id="key">
+        <label for="text">text</label>
+        <input type="text" name="text" id="text">
+        <input type="submit" value="Submit">
+    </form>
+
+    <script>
+        const size = document.getElementById('size');
+        const key = document.getElementById('key');
+        const plaintext = document.getElementById('plaintext');
+
+        // restrict key length is size * size
+        key.addEventListener('input', () => {
+            if (key.value.length > size.value * size.value) {
+                key.value = key.value.slice(0, size.value * size.value);
+            }
+        });
+    </script>
+</body>
+</html>
