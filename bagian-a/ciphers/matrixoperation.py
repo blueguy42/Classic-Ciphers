@@ -31,7 +31,7 @@ def getDeterminant(matrix: list[list[int]], n: int) -> int:
 
 def getAdjoint (matrix: list[list[int]], n: int) -> list[list[int]]:
     """Get adjoint of matrix, n is the size of matrix."""
-    
+
     adj = [[0 for x in range(n)] for y in range(n)]
     if n == 1:
         adj[0][0] = 1
@@ -51,3 +51,12 @@ def getInverseMatrixModulo(matrix: list[list[int]], n: int, modulo: int) -> list
     detInv = pow(int(det), -1, modulo)
     adj = getAdjoint(matrix, n)
     return np.remainder(np.multiply(adj, int(detInv)), modulo)
+
+def isInverseMatrix(matrix: list[list[int]], n: int) -> bool:
+    """Check if there is inverse of matrix, n is the size of matrix."""
+    det = int(getDeterminant(matrix, n))
+    if det == 0:
+        return False
+    else:
+        return True
+    

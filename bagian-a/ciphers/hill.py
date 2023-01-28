@@ -13,8 +13,12 @@ def cipher(text: str, key: str, size: int, operation=ENCRYPT) -> dict:
 
     if not sp.isAlphabet(key):
         return {'error': 'Key must only contain alphabetical characters.'}
-    if len(key) == size*size:
+    if len(key) != size*size:
         return {'error': f'Key must be a square matrix with size {size}x{size}.'}
+
+    text = sp.stringToAlphabet(text)
+    lenText = len(text)
+    text += 'A' * (size - (lenText % size))
 
     textNumber = sp.alphabetToNumber(sp.stringToAlphabet(text))
     textMatrix = np.array([textNumber[i:i+size] for i in range(0, len(text), size)])
@@ -23,33 +27,29 @@ def cipher(text: str, key: str, size: int, operation=ENCRYPT) -> dict:
     keyNumber = sp.alphabetToNumber(sp.stringToAlphabet(key))
     keyMatrix = np.array([keyNumber[i:i+size] for i in range(0, len(key), size)])
 
+    if not mo.isInverseMatrix(keyMatrix,size):
+        return {'error': 'Key matrix is not invertible.'}
+
     if operation == ENCRYPT:
         """C = KP mod N"""
         cipherMatrix = np.remainder(np.matmul(keyMatrix, textMatrix), N)
-        result = sp.numberToAlphabet(cipherMatrix.transpose().flatten())
+        result = (sp.numberToAlphabet(cipherMatrix.transpose().flatten()))[:lenText]
     
     elif operation == DECRYPT:
         """P = K^-1C mod N"""
         keyInv = mo.getInverseMatrixModulo(keyMatrix, size, N)
         plainMatrix = np.remainder(np.matmul(keyInv, textMatrix), N)
-        result = sp.numberToAlphabet(plainMatrix.transpose().flatten())
+        result = (sp.numberToAlphabet(plainMatrix.transpose().flatten()))[:lenText]
         
-    return {'operation': operation, 'key': key, 'text': text, 'result': result}
+    return {'operation': operation, 'key': key, 'text': text[:lenText], 'result': result}
 
-# 3X3
-key = 'RRFVSVCCT'
-# text = 'paymoremoney'
-# DECRYPT
 
-# 2X2
-key = 'DDCF'
-text = 'HELP'
-
-key = 'RRFVSVCCTABCDZAA'
-text = 'UBAVZCSJGAAZ'
+k = 'UWUUWUUWU'
+pt = 'PKI IS THE BEST'
+ct = 'SIRWNUOHFMHS'
 
 
 
-print(cipher(text, key, 4, DECRYPT))
-# print(cipher(text, key, 4, ENCRYPT))
+print(cipher(pt, k, 3, ENCRYPT))
+print(cipher(ct, k, 3, DECRYPT))
 
