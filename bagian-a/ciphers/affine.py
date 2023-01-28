@@ -8,14 +8,16 @@ ALPHABETICAL = 26
 BYTELENGTH = 256
 
 def validateKey(n: int, m: int) -> bool:
-    """Validate key, m must be relatively prime with n"""
+    """Validate key, m must be relatively prime with n."""
     return gcd(n, m) == 1
 
-def cipher(text: str, keyM: int, keyB: int, operation=ENCRYPT, n=ALPHABETICAL):
-    """Encrypt/decrypt plaintext using Affine cipher with key."""
+def cipher(text: str, keyM: int, keyB: int, operation=ENCRYPT, n=ALPHABETICAL) -> dict:
+    """Encrypt/decrypt plaintext using Affine cipher with key.
+    
+    Returns a dictionary with the type of operation (encyrpt or decrypt), alphabet size, M & B key, original text, and resulting text."""
 
     if not validateKey(n, keyM):
-        return {'error': f'Key is not relatively prime with character set size, {n}.'}
+        return {'error': f'Key is not relatively prime with alphabet size, {n}.'}
     if not 0 < keyB < n:
         return {'error': f'Key b must be in range 0 < b < {n}.'}
     
@@ -41,5 +43,5 @@ def cipher(text: str, keyM: int, keyB: int, operation=ENCRYPT, n=ALPHABETICAL):
     return {'operation': operation, 'n': n, 'keyM': keyM, 'keyB': keyB, 'text': text, 'result': result}
 
 
-print(cipher('kripto', 7, 10, ENCRYPT, BYTELENGTH))
-print(cipher('÷(é\x1a6\x13', 7, 10, DECRYPT, BYTELENGTH))
+# print(cipher('lho he assalamu\'alaikum wr. wb.', 19, 19, ENCRYPT, BYTELENGTH))
+print(cipher('\x17ËPsË\x92sF\x9c\x9cF\x17F*ÂøF\x17FÞ\x04Â*sè\x89}sèY}', 19, 19, DECRYPT, BYTELENGTH))
