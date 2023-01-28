@@ -1,45 +1,45 @@
 import stringparser as sp
 from math import gcd
 
-ENCRYPT = 0
-DECRYPT = 1
+ENCRYPT = 'encrypt'
+DECRYPT = 'decrypt'
+
+ALPHABETICAL = 26
+BYTELENGTH = 256
 
 def validateKey(n: int, m: int) -> bool:
     """Validate key, m must be relatively prime with n"""
     return gcd(n, m) == 1
 
-def cipher(text: str, keyM, keyB, operation=ENCRYPT):
+def cipher(text: str, keyM: int, keyB: int, operation=ENCRYPT, n=ALPHABETICAL):
     """Encrypt/decrypt plaintext using Affine cipher with key."""
 
-    n = 26          # Assumption
     if not validateKey(n, keyM):
-        return {'error': 'Key is not valid'}
+        return {'error': f'Key is not relatively prime with character set size, {n}.'}
+    if not 0 < keyB < n:
+        return {'error': f'Key b must be in range 0 < b < {n}.'}
     
-    text = sp.stringToAlphabet(text)
-    textNumbers = sp.alphabetToNumber(text)
+    if n == ALPHABETICAL:
+        text = sp.stringToAlphabet(text)
+        textNumbers = sp.alphabetToNumber(text)
+    elif n == BYTELENGTH:
+        textNumbers = sp.stringToASCII(text)
 
-    result = []
     if operation == ENCRYPT:
         """ENCRYPT -> C ≡ mP + b (mod n)"""
-        for P in textNumbers:
-            result.append((keyM * P + keyB) % n)
+        result = [((keyM * p + keyB) % n) for p in textNumbers]
     elif operation == DECRYPT:
         """DECRYPT -> P ≡ m^-1(C - b) (mod n)"""
-
-        mInverse = -1
-        for X in range(1, n):
-            if (((keyM % n) * (X % n)) % n == 1):
-                mInverse = X
-                break
-        
-        if mInverse == -1:
-            return {'error': 'Key is not valid'}
-        else:
-            for C in textNumbers:
-                result.append((mInverse * (C - keyB)) % n)
+        mInverse = pow(keyM, -1, n)
+        result = [((mInverse * (c - keyB)) % n) for c in textNumbers]
     
-    return sp.numberToAlphabet(result)
+    if n == ALPHABETICAL:
+        result = sp.numberToAlphabet(result)
+    elif n == BYTELENGTH:
+        result = sp.ASCIItoString(result)
+
+    return {'operation': operation, 'n': n, 'keyM': keyM, 'keyB': keyB, 'text': text, 'result': result}
 
 
-print(cipher('kripto', 7, 10, ENCRYPT))
-print(cipher('CZOLNE', 7, 10, DECRYPT))
+print(cipher('kripto', 7, 10, ENCRYPT, BYTELENGTH))
+print(cipher('÷(é\x1a6\x13', 7, 10, DECRYPT, BYTELENGTH))
