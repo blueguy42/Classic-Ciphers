@@ -1,5 +1,3 @@
-from collections import OrderedDict
-
 def isAlphabet(string: str) -> bool:
     """Checks if a string is an alphabet string, i.e. only contains alphabetic characters."""
     return string.isalpha()
@@ -23,20 +21,3 @@ def stringToASCII(string: str) -> list[int]:
 def ASCIItoString(ascii: list[int]) -> str:
     """Converts a list of ASCII numbers to a string."""
     return ''.join([chr(char) for char in ascii])
-
-def letterFreq(string: str) -> dict:
-    """Returns a dictionary of the letter frequencies of a string, sorted by frequency.
-    First removes all non-alphabetic characters and converts them to uppercase."""
-    string = stringToAlphabet(string)
-    freq = {}
-    for char in string:
-        if char in freq:
-            freq[char] += 1
-        else:
-            freq[char] = 1
-    freq = dict(OrderedDict(sorted(freq.items(), key=lambda i: i[1], reverse=True)))
-    i=0
-    for x in freq:
-        i += 1
-        print(f"{i}\t{x}\t{freq[x]}")
-    return freq
