@@ -7,7 +7,7 @@ DECRYPT = 'decrypt'
 N = 26
 
 def cipher(text: str, key: str, size: int, operation=ENCRYPT) -> dict:
-    """Encrypt/decrypt plaintext using Hill cipher with key.
+    """Encrypt/decrypt plaintext using Hill cipher with key. Adds padding of X if text length is not a multiple of size.
 
     Returns a dictionary with the type of operation (encyrpt or decrypt), key, original text, and resulting text."""
 
@@ -18,7 +18,8 @@ def cipher(text: str, key: str, size: int, operation=ENCRYPT) -> dict:
 
     text = sp.stringToAlphabet(text)
     lenText = len(text)
-    text += 'A' * (size - (lenText % size))
+    if lenText % size != 0:
+        text += 'X' * (size - (lenText % size))
 
     textNumber = sp.alphabetToNumber(sp.stringToAlphabet(text))
     textMatrix = np.array([textNumber[i:i+size] for i in range(0, len(text), size)])
@@ -33,21 +34,20 @@ def cipher(text: str, key: str, size: int, operation=ENCRYPT) -> dict:
     if operation == ENCRYPT:
         """C = KP mod N"""
         cipherMatrix = np.remainder(np.matmul(keyMatrix, textMatrix), N)
-        result = (sp.numberToAlphabet(cipherMatrix.transpose().flatten()))[:lenText]
+        result = (sp.numberToAlphabet(cipherMatrix.transpose().flatten()))
     
     elif operation == DECRYPT:
         """P = K^-1C mod N"""
         keyInv = mo.getInverseMatrixModulo(keyMatrix, size, N)
         plainMatrix = np.remainder(np.matmul(keyInv, textMatrix), N)
-        result = (sp.numberToAlphabet(plainMatrix.transpose().flatten()))[:lenText]
+        result = (sp.numberToAlphabet(plainMatrix.transpose().flatten()))
         
-    return {'operation': operation, 'key': key, 'text': text[:lenText], 'result': result}
+    return {'operation': operation, 'key': key, 'text': text, 'result': result}
 
 
-k = 'DDCF'
-pt = 'HELP'
-ct = 'HIAT'
+k = 'RRFVSVCCT'
+pt = 'ABDA'
+ct = 'GDHMNP'
 
-print(cipher(pt, k, 2, ENCRYPT))
-print(cipher(ct, k, 2, DECRYPT))
-
+print(cipher(pt, k, 3, ENCRYPT))
+print(cipher(ct, k, 3, DECRYPT))
