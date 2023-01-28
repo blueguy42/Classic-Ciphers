@@ -8,14 +8,16 @@ ALPHABETICAL = 26
 BYTELENGTH = 256
 
 def validateKey(n: int, m: int) -> bool:
-    """Validate key, m must be relatively prime with n"""
+    """Validate key, m must be relatively prime with n."""
     return gcd(n, m) == 1
 
-def cipher(text: str, keyM: int, keyB: int, operation=ENCRYPT, n=ALPHABETICAL):
-    """Encrypt/decrypt plaintext using Affine cipher with key."""
+def cipher(text: str, keyM: int, keyB: int, operation=ENCRYPT, n=ALPHABETICAL) -> dict:
+    """Encrypt/decrypt plaintext using Affine cipher with key.
+    
+    Returns a dictionary with the type of operation (encyrpt or decrypt), alphabet size, M & B key, original text, and resulting text."""
 
     if not validateKey(n, keyM):
-        return {'error': f'Key is not relatively prime with character set size, {n}.'}
+        return {'error': f'Key is not relatively prime with alphabet size, {n}.'}
     if not 0 < keyB < n:
         return {'error': f'Key b must be in range 0 < b < {n}.'}
     

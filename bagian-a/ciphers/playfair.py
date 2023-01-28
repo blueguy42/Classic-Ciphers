@@ -1,10 +1,10 @@
 import stringparser as sp
 import numpy as np
 
-ENCRYPT = 0
-DECRYPT = 1
+ENCRYPT = 'encrypt'
+DECRYPT = 'decrypt'
 
-def parseKey(key: str) -> np.array:
+def parseKey(key: str) -> list[list[int]]:
     """Parse key to be square matrix"""
 
     key = sp.stringToAlphabet(key)
@@ -50,7 +50,9 @@ def parseText(text: str) -> list[str]:
 
 
 def cipher(text: str, key: str, operation=ENCRYPT) -> dict:
-    """Encrypt/decrypt plaintext using Playfair cipher with key."""
+    """Encrypt/decrypt plaintext using Playfair cipher with key.
+    
+    Returns a dictionary with the type of operation (encyrpt or decrypt), key, original text, original text bigram, and resulting text."""
     
     text = sp.stringToAlphabet(text)
     matrixKey = parseKey(key)
@@ -92,11 +94,7 @@ def cipher(text: str, key: str, operation=ENCRYPT) -> dict:
                              matrixKey[p2[0], p1[1]][0])
 
     
-    return {'key': matrixKey, 'text': text, 'bigram': ' '.join(bigram), 'result': ''.join(result)}
-
-
-
-
+    return {'operation': operation, 'key': matrixKey, 'text': text, 'text bigram': ' '.join(bigram), 'result': ''.join(result)}
 
 
 key = "JALAN GANESHA SEPULUH"

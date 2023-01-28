@@ -24,7 +24,8 @@ def parseKey(text: str, key: str, operation=ENCRYPT, type=STANDARD) -> str:
 
 def cipher(text: str, key: str, operation=ENCRYPT, type=STANDARD) -> dict:
     """Encrypt/decrypt plaintext using Vigenere cipher with key.
-    Returns a dictionary with the key, original text, and resulting text."""
+    
+    Returns a dictionary with the type of operation (encyrpt or decrypt), type of vigenere cipher (standard, autokey, or extended), key, original text, and resulting text."""
 
     result = ''
     if type == STANDARD or type == AUTOKEY:

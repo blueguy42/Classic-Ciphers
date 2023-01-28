@@ -1,6 +1,8 @@
 import numpy as np
 
-def getCofactor (matrix, p, q, n): 
+def getCofactor(matrix: list[list[int]], p: int, q: int, n: int) -> list[list[int]]:
+    """Get cofactor of matrix[p][q], n is the size of matrix."""
+
     i = 0
     j = 0
     temp = [[0 for x in range(n)] for y in range(n)]
@@ -14,7 +16,9 @@ def getCofactor (matrix, p, q, n):
                     i += 1
     return temp
 
-def getDeterminant (matrix, n):
+def getDeterminant(matrix: list[list[int]], n: int) -> int:
+    """Get determinant of matrix, n is the size of matrix."""
+
     D = 0
     if n == 1:
         return matrix[0][0]
@@ -25,7 +29,9 @@ def getDeterminant (matrix, n):
         sign = -sign
     return D
 
-def getAdjoint (matrix, n):
+def getAdjoint (matrix: list[list[int]], n: int) -> list[list[int]]:
+    """Get adjoint of matrix, n is the size of matrix."""
+    
     adj = [[0 for x in range(n)] for y in range(n)]
     if n == 1:
         adj[0][0] = 1
@@ -38,7 +44,9 @@ def getAdjoint (matrix, n):
             adj[j][i] = (sign) * (getDeterminant(temp, n - 1))
     return adj
 
-def getInverseMatrixModulo (matrix, n, modulo):
+def getInverseMatrixModulo(matrix: list[list[int]], n: int, modulo: int) -> list[list[int]]:
+    """Get inverse of matrix, n is the size of matrix."""
+
     det = getDeterminant(matrix, n)
     detInv = pow(int(det), -1, modulo)
     adj = getAdjoint(matrix, n)
