@@ -52,11 +52,11 @@ def getInverseMatrixModulo(matrix: list[list[int]], n: int, modulo: int) -> list
     adj = getAdjoint(matrix, n)
     return np.remainder(np.multiply(adj, int(detInv)), modulo)
 
-def isInverseMatrix(matrix: list[list[int]], n: int) -> bool:
+def isInverseMatrix(matrix: list[list[int]], n: int, modulo: int) -> bool:
     """Check if there is inverse of matrix, n is the size of matrix."""
-    det = int(getDeterminant(matrix, n))
-    if det == 0:
+    try:
+        det = getDeterminant(matrix, n)
+        detInv = pow(int(det), -1, modulo)
+    except:
         return False
-    else:
-        return True
-    
+    return True

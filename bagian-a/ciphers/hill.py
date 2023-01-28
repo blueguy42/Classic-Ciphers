@@ -26,8 +26,8 @@ def cipher(text: str, key: str, size: int, operation=ENCRYPT) -> dict:
 
     keyNumber = sp.alphabetToNumber(sp.stringToAlphabet(key))
     keyMatrix = np.array([keyNumber[i:i+size] for i in range(0, len(key), size)])
-
-    if not mo.isInverseMatrix(keyMatrix,size):
+    
+    if not mo.isInverseMatrix(keyMatrix,size,N):
         return {'error': 'Key matrix is not invertible.'}
 
     if operation == ENCRYPT:
@@ -44,12 +44,10 @@ def cipher(text: str, key: str, size: int, operation=ENCRYPT) -> dict:
     return {'operation': operation, 'key': key, 'text': text[:lenText], 'result': result}
 
 
-k = 'UWUUWUUWU'
-pt = 'PKI IS THE BEST'
-ct = 'SIRWNUOHFMHS'
+k = 'DDCF'
+pt = 'HELP'
+ct = 'HIAT'
 
-
-
-print(cipher(pt, k, 3, ENCRYPT))
-print(cipher(ct, k, 3, DECRYPT))
+print(cipher(pt, k, 2, ENCRYPT))
+print(cipher(ct, k, 2, DECRYPT))
 
