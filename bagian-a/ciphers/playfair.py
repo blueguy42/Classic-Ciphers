@@ -64,7 +64,9 @@ def cipher(text: str, key: str, operation=ENCRYPT) -> dict:
             p1 = np.where(matrixKey == pair[0])
             p2 = np.where(matrixKey == pair[1])
             
-            if p1[0] == p2[0]:
+            if pair[0] == 'X' and pair[1] == 'X':
+                result.append('XX')
+            elif p1[0] == p2[0]:
                 result.append(matrixKey[p1[0], (p1[1] + 1) % 5][0] + 
                               matrixKey[p2[0], (p2[1] + 1) % 5][0])
 
@@ -81,7 +83,9 @@ def cipher(text: str, key: str, operation=ENCRYPT) -> dict:
             p1 = np.where(matrixKey == pair[0])
             p2 = np.where(matrixKey == pair[1])
             
-            if p1[0] == p2[0]:
+            if pair[0] == 'X' and pair[1] == 'X':
+                result.append('XX')
+            elif p1[0] == p2[0]:
                 result.append(matrixKey[p1[0], (p1[1] - 1) % 5][0] + 
                               matrixKey[p2[0], (p2[1] - 1) % 5][0])
 
@@ -99,10 +103,7 @@ def cipher(text: str, key: str, operation=ENCRYPT) -> dict:
 
 key = "JALAN GANESHA SEPULUH"
 text = "memex"
-text2 = "TATAYY"
+text2 = "TATAXX"
 
-# print(cipher(text, key, ENCRYPT))
+print(cipher(text, key, ENCRYPT))
 print(cipher(text2, key, DECRYPT))
-
-
-
