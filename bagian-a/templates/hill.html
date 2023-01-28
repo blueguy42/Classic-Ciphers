@@ -7,17 +7,21 @@
     <title>HILL</title>
 </head>
 <body>
-    {% include 'header.html' %}
+    {% include 'components/header.html' %}
     <h1>Hill</h1>
 
-    <form action="{{ url_for('hill')}}" method="post" enctype="multipart/form-data">
-        <label for="size">Size</label>
-        <input type="number" name="size" id="size">
-        <label for="key">Key</label>
-        <input type="text" name="key" id="key">
-        <label for="text">text</label>
-        <input type="text" name="text" id="text">
-        <input type="submit" value="Submit">
+    <form action="{{ url_for('hill')}}" method="POST" enctype="multipart/form-data">
+        <div style="display: flex; flex-direction: column;">
+            {% include 'components/operation.html' %}
+            {% include 'components/input-msg.html' %}
+            <div>
+                <label for="size">Size</label>
+                <input type="number" name="size" id="size">
+                <label for="key">Key</label>
+                <input type="text" name="key" id="key">
+            </div>
+            <input type="submit" value="Submit">
+        </div>
     </form>
 
     <script>
@@ -32,5 +36,6 @@
             }
         });
     </script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>

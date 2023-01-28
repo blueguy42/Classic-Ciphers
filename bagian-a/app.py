@@ -34,39 +34,73 @@ def display_comp(filename):
 def vigenere():
     if request.method == 'POST':
         print("1")
-        type = request.form['type']
         operation = request.form['operation']
-        input_method = request.form['input_method']
+        input_method = request.form['input_method'] 
         msg = request.form['msg']
         key = request.form['key']
-        print(type)
+        type = request.form['type']
         print(operation)
         print(input_method)
         print(msg)
         print(key)
-
+        print(type)
     else:
         print("2")
+
     return render_template("vigenere.html")
 
-@app.route('/affine')
+@app.route('/affine', methods=['GET', 'POST'])
 def affine():
+    if request.method == 'POST':
+        print("1")
+        operation = request.form['operation']
+        input_method = request.form['input_method'] 
+        msg = request.form['msg']
+        key_m = request.form['key_m']
+        key_b = request.form['key_b']
+        type_char = request.form['type_char']
+        print(operation)
+        print(input_method)
+        print(msg)
+        print(key_m)
+        print(key_b)
+        print(type_char)
+    else:
+        print("2")
+
     return render_template("affine.html")
 
-@app.route('/playfair')
+@app.route('/playfair', methods=['GET', 'POST'])
 def playfair(): 
+    if request.method == 'POST':
+        print("1")
+        operation = request.form['operation']
+        input_method = request.form['input_method']
+        msg = request.form['msg']
+        key = request.form['key']
+        print(operation)
+        print(input_method)
+        print(msg)
+        print(key)
+    else:
+        print("2")
+        
     return render_template("playfair.html")
 
 @app.route('/hill', methods=['GET', 'POST'])
 def hill():
     if request.method == 'POST':
         print("1")
-        size = int(request.form['size'])
-        key = request.form['key']
-        text = request.form['text']
-        print(size)
+        operation = request.form['operation']
+        input_method = request.form['input_method'] 
+        msg = request.form['msg']
+        key= request.form['key']
+        size = request.form['size']
+        print(operation)
+        print(input_method)
+        print(msg)
         print(key)
-        print(text)
+        print(size)
     else:
         print("2")
     
