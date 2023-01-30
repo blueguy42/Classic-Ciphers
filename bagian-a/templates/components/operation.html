@@ -1,7 +1,15 @@
 <div>
-    <label for="operation">Operation</label>
-    <input type="radio" id="encrypt" name="operation" value="encrypt" checked>
-    <label for="encrypt">Encrypt</label>
-    <input type="radio" id="decrypt" name="operation" value="decrypt">
-    <label for="decrypt">Decrypt</label>
+    <div>
+        <h4>Operation</h4>
+    </div>
+    <div style="display: flex; column-gap: 16px;">
+        <div class="operation-item">
+            <input type="radio" id="encrypt" name="operation" value="encrypt" checked>
+            <label for="encrypt">Encrypt</label>
+        </div>
+        <div class="operation-item">    
+            <input type="radio" id="decrypt" name="operation" value="decrypt">
+            <label for="decrypt">Decrypt</label>
+        </div>
+    </div>
 </div>

@@ -5,32 +5,54 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AFFINE</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
 <body>
     {% include 'components/header.html' %}
     <h1>Affine</h1>
 
-    <form action="{{ url_for('affine')}}" method="POST" enctype="multipart/form-data">
-        <div style="display: flex; flex-direction: column;">
-            {% include 'components/operation.html' %}
-            {% include 'components/input-msg.html' %}
-            <div>
-                <label for="key_m">Key M</label>
-                <input type="text" name="key_m" id="key_m">
-                <label for="key_b">Key B</label>
-                <input type="text" name="key_b" id="key_b">
+    <div class="input">
+        <h3>INPUT</h3>
+        <hr />
+        <form action="{{ url_for('affine')}}" method="POST" enctype="multipart/form-data">
+            <div style="display: flex; flex-direction: column; row-gap: 16px;">
+                {% include 'components/operation.html' %}
+                {% include 'components/input-msg.html' %}
+                <div class="affine-key">
+                    <div>
+                        <h4>Key M</h4>
+                        <input type="text" name="key_m" id="key_m" class="key">
+                    </div>
+                    <div>
+                        <h4>Key B</h4>
+                        <input type="text" name="key_b" id="key_b" class="key">
+                    </div>
+                </div>
+                <div>
+                    <h4>Type of Character</h4>
+                    <div style="display: flex; column-gap: 16px;">
+                        <div class="char-item">
+                            <input type="radio" id="alpha" name="type_char" value="alpha" checked>
+                            <label for="alpha">Alphabet (26)</label>
+                        </div>
+                        <div class="char-item">
+                            <input type="radio" id="byte" name="type_char" value="byte">
+                            <label for="byte">ASCII (256)</label> 
+                        </div>
+                    </div>
+                </div>
+    
+                <input type="submit" value="Submit">
             </div>
-            <div>
-                <label for="type_char">Type of Character</label>
-                <input type="radio" id="alpha" name="type_char" value="alpha" checked>
-                <label for="encrypt">Alphabet</label>
-                <input type="radio" id="byte" name="type_char" value="byte">
-                <label for="decrypt">Byte</label>
-            </div>
+        </form>
+    </div>
 
-            <input type="submit" value="Submit">
-        </div>
-    </form>
+    {% include 'components/output.html' %}
 
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>

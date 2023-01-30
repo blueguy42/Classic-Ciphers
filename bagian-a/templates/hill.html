@@ -5,24 +5,41 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HILL</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
 <body>
     {% include 'components/header.html' %}
     <h1>Hill</h1>
 
-    <form action="{{ url_for('hill')}}" method="POST" enctype="multipart/form-data">
-        <div style="display: flex; flex-direction: column;">
-            {% include 'components/operation.html' %}
-            {% include 'components/input-msg.html' %}
-            <div>
-                <label for="size">Size</label>
-                <input type="number" name="size" id="size">
-                <label for="key">Key</label>
-                <input type="text" name="key" id="key">
+    <div class="input">
+        <h3>INPUT</h3>
+        <hr />
+        <form action="{{ url_for('hill')}}" method="POST" enctype="multipart/form-data">
+            <div style="display: flex; flex-direction: column; row-gap: 16px;">
+                {% include 'components/operation.html' %}
+                {% include 'components/input-msg.html' %}
+                <div class="hill-size-key">
+                    <div>
+                        <h4>Size</h4>
+                        <input type="number" name="size" id="size" class="size">
+                        <p class="info">Size of matrix nxn</p>
+                    </div>
+                    <div>
+                        <h4>Key</h4>
+                        <input type="text" name="key" id="key" class="key">
+                    </div>
+                </div>
+                <input type="submit" value="Submit">
             </div>
-            <input type="submit" value="Submit">
-        </div>
-    </form>
+        </form>
+    </div>
+
+    {% include 'components/output.html' %}
 
     <script>
         const size = document.getElementById('size');
