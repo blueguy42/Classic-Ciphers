@@ -1,4 +1,5 @@
-import stringparser as sp
+# import stringparser as sp (KALO run file ini, importnya make ini)
+from . import stringparser as sp
 import numpy as np
 
 ENCRYPT = 'encrypt'
@@ -99,11 +100,3 @@ def cipher(text: str, key: str, operation=ENCRYPT) -> dict:
 
     
     return {'operation': operation, 'key': matrixKey, 'text': text, 'text bigram': ' '.join(bigram), 'result': ''.join(result)}
-
-
-key = "JALAN GANESHA SEPULUH"
-text = "memex"
-text2 = "TATAXX"
-
-print(cipher(text, key, ENCRYPT))
-print(cipher(text2, key, DECRYPT))

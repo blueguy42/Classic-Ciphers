@@ -3,6 +3,11 @@ import os
 from werkzeug.utils import secure_filename
 from os.path import join, dirname, realpath
 
+from ciphers.vigenere import cipher as vigenere_cipher
+from ciphers.affine import cipher as affine_cipher
+from ciphers.playfair import cipher as playfair_cipher
+from ciphers.hill import cipher as hill_cipher
+
 app = Flask(__name__, static_folder=join(dirname(realpath(__file__)), 'static/'))
 
 # MEMBUAT DIR KALAU BELUM ADA
@@ -39,15 +44,14 @@ def vigenere():
         msg = request.form['msg']
         key = request.form['key']
         type = request.form['type']
-        print(operation)
-        print(input_method)
-        print(msg)
-        print(key)
-        print(type)
+
+        result = vigenere_cipher(msg, key, operation, type)
+        print(result)
+        return render_template("vigenere.html", result=result)
     else:
         print("2")
+        return render_template("vigenere.html")
 
-    return render_template("vigenere.html")
 
 @app.route('/affine', methods=['GET', 'POST'])
 def affine():
@@ -56,19 +60,16 @@ def affine():
         operation = request.form['operation']
         input_method = request.form['input_method'] 
         msg = request.form['msg']
-        key_m = request.form['key_m']
-        key_b = request.form['key_b']
-        type_char = request.form['type_char']
-        print(operation)
-        print(input_method)
-        print(msg)
-        print(key_m)
-        print(key_b)
-        print(type_char)
+        key_m = int(request.form['key_m'])
+        key_b = int(request.form['key_b'])
+        n_char = int(request.form['n_char'])
+
+        result = affine_cipher(msg, key_m, key_b, operation, n_char)
+        print(result)
+        return render_template("affine.html", result=result)
     else:
         print("2")
-
-    return render_template("affine.html")
+        return render_template("affine.html")
 
 @app.route('/playfair', methods=['GET', 'POST'])
 def playfair(): 
@@ -78,14 +79,13 @@ def playfair():
         input_method = request.form['input_method']
         msg = request.form['msg']
         key = request.form['key']
-        print(operation)
-        print(input_method)
-        print(msg)
-        print(key)
+
+        result = playfair_cipher(msg, key, operation)
+        print(result)
+        return render_template("playfair.html", result=result)
     else:
         print("2")
-        
-    return render_template("playfair.html")
+        return render_template("playfair.html")
 
 @app.route('/hill', methods=['GET', 'POST'])
 def hill():
@@ -95,15 +95,13 @@ def hill():
         input_method = request.form['input_method'] 
         msg = request.form['msg']
         key= request.form['key']
-        size = request.form['size']
-        print(operation)
-        print(input_method)
-        print(msg)
-        print(key)
-        print(size)
+        size = int(request.form['size'])
+
+        result = hill_cipher(msg, key, size, operation)
+        print(result)
+        return render_template("hill.html", result=result)
     else:
         print("2")
-    
     return render_template("hill.html")
     
 

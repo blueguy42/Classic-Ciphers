@@ -1,4 +1,5 @@
-import stringparser as sp
+# import stringparser as sp (KALO run file ini, importnya make ini)
+from . import stringparser as sp
 from math import gcd
 
 ENCRYPT = 'encrypt'
@@ -41,7 +42,3 @@ def cipher(text: str, keyM: int, keyB: int, operation=ENCRYPT, n=ALPHABETICAL) -
         result = sp.ASCIItoString(result)
 
     return {'operation': operation, 'n': n, 'keyM': keyM, 'keyB': keyB, 'text': text, 'result': result}
-
-
-# print(cipher('lho he assalamu\'alaikum wr. wb.', 19, 19, ENCRYPT, BYTELENGTH))
-print(cipher('\x17ËPsË\x92sF\x9c\x9cF\x17F*ÂøF\x17FÞ\x04Â*sè\x89}sèY}', 19, 19, DECRYPT, BYTELENGTH))

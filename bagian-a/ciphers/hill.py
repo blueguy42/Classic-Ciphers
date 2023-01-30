@@ -1,5 +1,6 @@
-import stringparser as sp
-import matrixoperation as mo
+# import stringparser as sp (KALO run file ini, importnya make ini)
+from . import stringparser as sp
+from . import matrixoperation as mo
 import numpy as np
 
 ENCRYPT = 'encrypt'
@@ -43,11 +44,3 @@ def cipher(text: str, key: str, size: int, operation=ENCRYPT) -> dict:
         result = (sp.numberToAlphabet(plainMatrix.transpose().flatten()))
         
     return {'operation': operation, 'key': key, 'text': text, 'result': result}
-
-
-k = 'RRFVSVCCT'
-pt = 'ABDA'
-ct = 'GDHMNP'
-
-print(cipher(pt, k, 3, ENCRYPT))
-print(cipher(ct, k, 3, DECRYPT))

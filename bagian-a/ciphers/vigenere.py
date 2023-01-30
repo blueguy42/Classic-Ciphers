@@ -1,4 +1,5 @@
-import stringparser as sp
+# import stringparser as sp (KALO run file ini, importnya make ini)
+from . import stringparser as sp
 
 STANDARD = 'standard'
 AUTOKEY = 'autokey'

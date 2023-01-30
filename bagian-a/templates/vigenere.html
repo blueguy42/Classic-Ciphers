@@ -50,8 +50,27 @@
         </form>
     </div>
 
-    {% include 'components/output.html' %}
-
+    {% if result %}
+        <div class="output">
+            <h3>OUTPUT</h3>
+            <hr />
+            <div style="display: flex; flex-direction: column; row-gap: 16px;">
+                <div>
+                    {% for key, value in result.items() %}
+                        {% if key == 'result' %}
+                            <h4>{{ key }}</h4>
+                            <p>{{ value }}</p>
+                            <!-- di python bisa gini " ".join(value[i:i+5] for i in range(0, len(value), 5))) -->
+                            <p>
+                            {% for i in range(0, value|length, 5) %}
+                                {{ value[i:i+5] }}
+                            {% endfor %}
+                            </p>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+    {% endif %}
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>
