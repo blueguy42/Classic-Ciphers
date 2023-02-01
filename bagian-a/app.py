@@ -55,9 +55,8 @@ def vigenere():
                 if '.' in filename:
                     extension = "." + filename.split('.')[-1]
 
-                date = str(datetime.datetime.now())
+                date = datetime.datetime.utcnow().strftime('%Y%m%d-%H%M%S%f')[:-3]
                 nameFile = f"vigenere_{operation}_{type}_{input_method}_{date}{extension}"
-
                 saved_filename = os.path.join(app.config['INPUT_FOLDER'], nameFile)
                 file.save(saved_filename)
                 msg = ''
@@ -71,11 +70,7 @@ def vigenere():
                     f.close()
 
                 result = vigenere_cipher(msg, key, operation, type)
-                print(msg)
-                print(result)
-
                 saved_output = os.path.join(app.config['OUTPUT_FOLDER'], nameFile)
-                
                 if (type == "standard" or type == "autokey"):
                     f = open(saved_output, "w")
                     f.write(result['result'])
@@ -92,12 +87,10 @@ def vigenere():
         elif input_method == "manual":
             msg = request.form['msg']
             if operation and type and input_method and msg and key:
-                date = str(datetime.datetime.now())
+                date = datetime.datetime.utcnow().strftime('%Y%m%d-%H%M%S%f')[:-3]
                 nameFile = f"vigenere_{operation}_{type}_{input_method}_{date}.txt"
                 saved_output = os.path.join(app.config['OUTPUT_FOLDER'], nameFile)
-
                 result = vigenere_cipher(msg, key, operation, type)
-
                 f = open(saved_output, "w")
                 f.write(result['result'])
                 f.close()
