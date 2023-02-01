@@ -1,4 +1,3 @@
-# import stringparser as sp (KALO run file ini, importnya make ini)
 from . import stringparser as sp
 import numpy as np
 
@@ -97,6 +96,7 @@ def cipher(text: str, key: str, operation=ENCRYPT) -> dict:
             else:
                 result.append(matrixKey[p1[0], p2[1]][0] +
                              matrixKey[p2[0], p1[1]][0])
+            result = result.lower()
 
     
     return {'operation': operation, 'key': matrixKey, 'text': text, 'text bigram': ' '.join(bigram), 'result': ''.join(result)}

@@ -1,4 +1,3 @@
-# import stringparser as sp (KALO run file ini, importnya make ini)
 from . import stringparser as sp
 from math import gcd
 
@@ -38,7 +37,9 @@ def cipher(text: str, keyM: int, keyB: int, operation=ENCRYPT, n=ALPHABETICAL) -
     
     if n == ALPHABETICAL:
         result = sp.numberToAlphabet(result)
+        if operation == DECRYPT:
+            result = result.lower()
     elif n == BYTELENGTH:
-        result = sp.ASCIItoString(result)
+        result = bytes(result)
 
     return {'operation': operation, 'n': n, 'keyM': keyM, 'keyB': keyB, 'text': text, 'result': result}

@@ -1,7 +1,8 @@
-from flask import Flask, flash, request, redirect, url_for, render_template, Markup
+from flask import Flask, flash, request, redirect, url_for, render_template
 import os
 from werkzeug.utils import secure_filename
 from os.path import join, dirname, realpath
+import datetime
 
 from ciphers.vigenere import cipher as vigenere_cipher
 from ciphers.affine import cipher as affine_cipher
@@ -19,8 +20,6 @@ os.makedirs(OUTPUT_FOLDER, exist_ok=True)
 app.secret_key = "afandanliza"
 app.config['INPUT_FOLDER'] = INPUT_FOLDER
 app.config['OUTPUT_FOLDER'] = OUTPUT_FOLDER
-app.config['PREFIX_INPUT'] = "input_"
-app.config['PREFIX_OUTPUT'] = "output_"
 app.config['MAX_CONTENT_LENGTH'] = 120 * 1024 * 1024
 
 @app.route("/")
@@ -28,28 +27,86 @@ def home():
     return render_template("home.html")
 
 @app.route('/input/<filename>')
-def display_org(filename):
-    return redirect(url_for('static', filename='file/input/' + app.config['PREFIX_INPUT'] + filename), code=301)
+def display_input(filename):
+    return redirect(url_for('static', filename='file/input/' + filename), code=301)
 
 @app.route('/compressed/<filename>')
-def display_comp(filename):
-    return redirect(url_for('static', filename='file/output/' + app.config['PREFIX_OUTPUT']+ filename), code=301)
+def display_output(filename):
+    return redirect(url_for('static', filename='file/output/' + filename), code=301)
 
 @app.route('/vigenere', methods=['GET', 'POST'])
 def vigenere():
     if request.method == 'POST':
-        print("1")
         operation = request.form['operation']
-        input_method = request.form['input_method'] 
-        msg = request.form['msg']
-        key = request.form['key']
         type = request.form['type']
+        input_method = request.form['input_method'] 
+        key = request.form['key']
 
-        result = vigenere_cipher(msg, key, operation, type)
-        print(result)
-        return render_template("vigenere.html", result=result)
+        if input_method == "file":
+            file = request.files['msg']
+            if file.filename and operation and type and input_method and key:
+                filename = secure_filename(file.filename)
+
+                if (type == "standard" or type == "autokey") and not filename.lower().endswith(".txt"):
+                    flash("Please input a .txt file!")
+                    return render_template("vigenere.html")
+
+                extension = ""
+                if '.' in filename:
+                    extension = "." + filename.split('.')[-1]
+
+                date = str(datetime.datetime.now())
+                nameFile = f"vigenere_{operation}_{type}_{input_method}_{date}{extension}"
+
+                saved_filename = os.path.join(app.config['INPUT_FOLDER'], nameFile)
+                file.save(saved_filename)
+                msg = ''
+                if (type == "standard" or type == "autokey"):
+                    f = open(saved_filename, "r")
+                    msg = f.read()
+                    f.close()
+                else:
+                    f = open(saved_filename, "rb")
+                    msg = f.read()
+                    f.close()
+
+                result = vigenere_cipher(msg, key, operation, type)
+                print(msg)
+                print(result)
+
+                saved_output = os.path.join(app.config['OUTPUT_FOLDER'], nameFile)
+                
+                if (type == "standard" or type == "autokey"):
+                    f = open(saved_output, "w")
+                    f.write(result['result'])
+                    f.close()
+                else:
+                    f = open(saved_output, "wb")
+                    f.write(result['result'])
+                    f.close()
+
+                return render_template("vigenere.html", result=result['result'], type=type, input_method=input_method, filename=nameFile)
+            else:
+                flash("Please fill all the fields!")
+                return render_template("vigenere.html")
+        elif input_method == "manual":
+            msg = request.form['msg']
+            if operation and type and input_method and msg and key:
+                date = str(datetime.datetime.now())
+                nameFile = f"vigenere_{operation}_{type}_{input_method}_{date}.txt"
+                saved_output = os.path.join(app.config['OUTPUT_FOLDER'], nameFile)
+
+                result = vigenere_cipher(msg, key, operation, type)
+
+                f = open(saved_output, "w")
+                f.write(result['result'])
+                f.close()
+
+                return render_template("vigenere.html", result=result['result'], type=type, input_method=input_method, filename=nameFile)
+            else:
+                flash("Please fill all the fields!")
+                return render_template("vigenere.html")        
     else:
-        print("2")
         return render_template("vigenere.html")
 
 

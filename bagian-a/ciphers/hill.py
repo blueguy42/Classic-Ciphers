@@ -1,4 +1,3 @@
-# import stringparser as sp (KALO run file ini, importnya make ini)
 from . import stringparser as sp
 from . import matrixoperation as mo
 import numpy as np
@@ -41,6 +40,6 @@ def cipher(text: str, key: str, size: int, operation=ENCRYPT) -> dict:
         """P = K^-1C mod N"""
         keyInv = mo.getInverseMatrixModulo(keyMatrix, size, N)
         plainMatrix = np.remainder(np.matmul(keyInv, textMatrix), N)
-        result = (sp.numberToAlphabet(plainMatrix.transpose().flatten()))
+        result = (sp.numberToAlphabet(plainMatrix.transpose().flatten())).lower()
         
     return {'operation': operation, 'key': key, 'text': text, 'result': result}

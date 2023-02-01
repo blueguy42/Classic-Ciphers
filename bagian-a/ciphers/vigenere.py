@@ -1,4 +1,3 @@
-# import stringparser as sp (KALO run file ini, importnya make ini)
 from . import stringparser as sp
 
 STANDARD = 'standard'
@@ -30,8 +29,6 @@ def cipher(text: str, key: str, operation=ENCRYPT, type=STANDARD) -> dict:
 
     result = ''
     if type == STANDARD or type == AUTOKEY:
-        if not sp.isAlphabet(key):
-            return {'error': 'Key must only contain alphabetical characters.'}
         text = sp.stringToAlphabet(text)
         key = parseKey(text, sp.stringToAlphabet(key), operation, type)
 
@@ -40,15 +37,15 @@ def cipher(text: str, key: str, operation=ENCRYPT, type=STANDARD) -> dict:
         if operation == ENCRYPT:
             result = sp.numberToAlphabet([(textNum[i] + keyNum[i]) % 26 for i in range(len(textNum))])
         elif operation == DECRYPT:
-            result = sp.numberToAlphabet([(textNum[i] - keyNum[i]) % 26 for i in range(len(textNum))])
+            result = (sp.numberToAlphabet([(textNum[i] - keyNum[i]) % 26 for i in range(len(textNum))])).lower()
     elif type == EXTENDED:
         key = parseKey(text, key, operation, type)
 
-        textASCII = sp.stringToASCII(text)
+        textASCII = text
         keyASCII = sp.stringToASCII(key)
         if operation == ENCRYPT:
-            result = sp.ASCIItoString([(textASCII[i] + keyASCII[i]) % 256 for i in range(len(textASCII))])
+            result = bytes([(textASCII[i] + keyASCII[i]) % 256 for i in range(len(textASCII))])
         elif operation == DECRYPT:
-            result = sp.ASCIItoString([(textASCII[i] - keyASCII[i]) % 256 for i in range(len(textASCII))])
+            result = bytes([(textASCII[i] - keyASCII[i]) % 256 for i in range(len(textASCII))])
 
     return {'operation': operation, 'type': type, 'key': key, 'text': text, 'result': result}
