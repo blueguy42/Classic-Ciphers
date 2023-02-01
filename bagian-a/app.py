@@ -8,6 +8,7 @@ from ciphers.vigenere import cipher as vigenere_cipher
 from ciphers.affine import cipher as affine_cipher
 from ciphers.playfair import cipher as playfair_cipher
 from ciphers.hill import cipher as hill_cipher
+import ciphers.stringparser as sp
 
 app = Flask(__name__, static_folder=join(dirname(realpath(__file__)), 'static/'))
 
@@ -90,10 +91,19 @@ def vigenere():
                 date = datetime.datetime.utcnow().strftime('%Y%m%d-%H%M%S%f')[:-3]
                 nameFile = f"vigenere_{operation}_{type}_{input_method}_{date}.txt"
                 saved_output = os.path.join(app.config['OUTPUT_FOLDER'], nameFile)
-                result = vigenere_cipher(msg, key, operation, type)
-                f = open(saved_output, "w")
-                f.write(result['result'])
-                f.close()
+
+                if type=="extended":
+                    msg = bytes(sp.stringToASCII(msg))
+                    result = vigenere_cipher(msg, key, operation, type)
+                    f = open(saved_output, "wb")
+                    f.write(result['result'])
+                    f.close()
+                    result['result'] = sp.ASCIItoString(result['result'])
+                else:
+                    result = vigenere_cipher(msg, key, operation, type)
+                    f = open(saved_output, "w")
+                    f.write(result['result'])
+                    f.close()
 
                 return render_template("vigenere.html", result=result['result'], type=type, input_method=input_method, filename=nameFile)
             else:

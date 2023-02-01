@@ -25,7 +25,7 @@ def cipher(text: str, keyM: int, keyB: int, operation=ENCRYPT, n=ALPHABETICAL) -
         text = sp.stringToAlphabet(text)
         textNumbers = sp.alphabetToNumber(text)
     elif n == BYTELENGTH:
-        textNumbers = sp.stringToASCII(text)
+        textNumbers = text
 
     if operation == ENCRYPT:
         """ENCRYPT -> C ≡ mP + b (mod n)"""
