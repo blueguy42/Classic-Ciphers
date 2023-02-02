@@ -50,13 +50,13 @@ label {
     margin-bottom: 0;
 }
 
-.operation-item, .type-item, .char-item, .input-method-item {
+.operation-item, .type-item, .char-item, .input-method-item, .show-item {
     padding: 15px;
     border-radius: 10px;
     background: #0e1011;
 }
 
-.operation-item, .input-method-item, .char-item {
+.operation-item, .input-method-item, .char-item, .show-item {
     width: 50%;
 }
 
@@ -78,12 +78,12 @@ textarea {
     height: auto;
     width: 100%;
     border-radius: 10px;
-    min-height: 100px;
+    min-height: 200px;
     padding: 8px;
 }
 
 /* input submit */
-input[type=submit] {
+.button {
     border: none;
     border-radius: 10px;
     padding: 20px 50px;
@@ -93,6 +93,7 @@ input[type=submit] {
     color: white;
     font-size: 20px;
     cursor: pointer;
+    width: 100%;
 }
 
 .affine-key, .hill-size-key {
@@ -117,4 +118,13 @@ p.info {
     margin-top: 0;
     margin-bottom: 0;
     color: lightblue;
+}
+
+.show-result {
+    background: white;
+    color: black;
+    padding: 10px;
+    border-radius: 10px;
+    height: 200px;
+    overflow-y: auto;
 }

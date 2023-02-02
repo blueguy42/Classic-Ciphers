@@ -45,7 +45,7 @@
                     <input type="text" name="key" id="key" class="key">
                 </div>
 
-                <input type="submit" value="Submit">
+                <input type="submit" value="Submit" class="button">
                 {% with messages = get_flashed_messages() %}
                     {% if messages %}
                         <ul style="list-style-type: none; text-align: center; padding: 0">
@@ -63,20 +63,40 @@
         <div class="output">
             <h3>OUTPUT</h3>
             <hr />
-            {% if input_method == "manual" or type == "standard" or type == "autokey" %}
+            {% if type == "standard" or type == "autokey" %}
                 <div style="display: flex; flex-direction: column; row-gap: 16px;">
                     <div>
-                        <p>{{ result }}</p>
-                        <!-- di python bisa gini " ".join(value[i:i+5] for i in range(0, len(value), 5))) -->
-                        <p>
-                        {% for i in range(0, value|length, 5) %}
-                            {{ value[i:i+5] }}
-                        {% endfor %}
-                        </p>
+                        <div style="display: flex; column-gap: 16px; margin-bottom: 16px;">
+                            <div class="show-item">
+                                <input type="radio" id="without-space" name="show" value="without-space" checked>
+                                <label for="without-space">Without space</label>
+                            </div>
+                            <div class="show-item">    
+                                <input type="radio" id="group-of-5" name="show" value="group-of-5">
+                                <label for="group-of-5">Group of 5</label>
+                            </div>
+                        </div>
+                        <div id="without-space-result" class="show-result" style="word-break: break-all;">
+                            <p>{{ result }}</p>
+                        </div>
+                        <div id="group-of-5-result" class="show-result" style="display: none;">
+                            <p>
+                                {% for i in range(0, result|length, 5) %}
+                                {{ result[i:i+5] }}
+                                {% endfor %}
+                            </p>
+                        </div>
                     </div>
                 </div>
             {% endif %}
-            <a href="{{ url_for('display_output', filename=filename) }}" download>Download Result</a>
+            <div style="display: flex; flex-direction: column; margin-top: 16px;">
+                <a href="{{ url_for('display_output', filename=filename) }}" download>
+                    <button class="button">
+                        <i class="fa fa-download"></i>
+                        Download Result
+                    </button>
+                </a>
+            </div>
     {% endif %}
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
