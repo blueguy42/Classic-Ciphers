@@ -90,10 +90,18 @@ def vigenere():
             if operation and type and input_method and msg and key:
                 date = datetime.datetime.utcnow().strftime('%Y%m%d-%H%M%S%f')[:-3]
                 nameFile = f"vigenere_{operation}_{type}_{input_method}_{date}.txt"
-                saved_output = os.path.join(app.config['OUTPUT_FOLDER'], nameFile)
+                saved_filename = os.path.join(app.config['INPUT_FOLDER'], nameFile)
+                f = open(saved_filename, "w")
+                f.write(msg)
+                f.close()
 
+                saved_output = os.path.join(app.config['OUTPUT_FOLDER'], nameFile)
                 if type=="extended":
-                    msg = bytes(sp.stringToASCII(msg))
+                    try:
+                        msg = bytes(sp.stringToASCII(msg))
+                    except:
+                        flash("Message is not ASCII encoded!")
+                        return render_template("vigenere.html")
                     result = vigenere_cipher(msg, key, operation, type)
                     f = open(saved_output, "wb")
                     f.write(result['result'])
