@@ -38,106 +38,192 @@ def display_output(filename):
 @app.route('/vigenere', methods=['GET', 'POST'])
 def vigenere():
     if request.method == 'POST':
-        operation = request.form['operation']
-        type = request.form['type']
-        input_method = request.form['input_method'] 
-        key = request.form['key']
+        try:
+            operation = request.form['operation']
+            type = request.form['type']
+            input_method = request.form['input_method'] 
+            key = request.form['key']
 
-        if input_method == "file":
-            file = request.files['msg']
-            if file.filename and operation and type and input_method and key:
-                filename = secure_filename(file.filename)
+            if input_method == "file":
+                file = request.files['msg']
+                if file.filename and operation and type and input_method and key:
+                    filename = secure_filename(file.filename)
 
-                if (type == "standard" or type == "autokey") and not filename.lower().endswith(".txt"):
-                    flash("Please input a .txt file!")
-                    return render_template("vigenere.html")
-
-                extension = ""
-                if '.' in filename:
-                    extension = "." + filename.split('.')[-1]
-
-                date = datetime.datetime.utcnow().strftime('%Y%m%d-%H%M%S%f')[:-3]
-                nameFile = f"vigenere_{operation}_{type}_{input_method}_{date}{extension}"
-                saved_filename = os.path.join(app.config['INPUT_FOLDER'], nameFile)
-                file.save(saved_filename)
-                msg = ''
-                if (type == "standard" or type == "autokey"):
-                    f = open(saved_filename, "r")
-                    msg = f.read()
-                    f.close()
-                else:
-                    f = open(saved_filename, "rb")
-                    msg = f.read()
-                    f.close()
-
-                result = vigenere_cipher(msg, key, operation, type)
-                saved_output = os.path.join(app.config['OUTPUT_FOLDER'], nameFile)
-                if (type == "standard" or type == "autokey"):
-                    f = open(saved_output, "w")
-                    f.write(result['result'])
-                    f.close()
-                else:
-                    f = open(saved_output, "wb")
-                    f.write(result['result'])
-                    f.close()
-
-                return render_template("vigenere.html", result=result['result'], type=type, input_method=input_method, filename=nameFile)
-            else:
-                flash("Please fill all the fields!")
-                return render_template("vigenere.html")
-        elif input_method == "manual":
-            msg = request.form['msg']
-            if operation and type and input_method and msg and key:
-                date = datetime.datetime.utcnow().strftime('%Y%m%d-%H%M%S%f')[:-3]
-                nameFile = f"vigenere_{operation}_{type}_{input_method}_{date}.txt"
-                saved_filename = os.path.join(app.config['INPUT_FOLDER'], nameFile)
-                f = open(saved_filename, "w")
-                f.write(msg)
-                f.close()
-
-                saved_output = os.path.join(app.config['OUTPUT_FOLDER'], nameFile)
-                if type=="extended":
-                    try:
-                        msg = bytes(sp.stringToASCII(msg))
-                    except:
-                        flash("Message is not ASCII encoded!")
+                    if (type == "standard" or type == "autokey") and not filename.lower().endswith(".txt"):
+                        flash("Please input a .txt file!")
                         return render_template("vigenere.html")
+
+                    extension = ""
+                    if '.' in filename:
+                        extension = "." + filename.split('.')[-1]
+
+                    date = datetime.datetime.utcnow().strftime('%Y%m%d-%H%M%S%f')[:-3]
+                    nameFile = f"vigenere_{operation}_{type}_{input_method}_{date}{extension}"
+                    saved_filename = os.path.join(app.config['INPUT_FOLDER'], nameFile)
+                    file.save(saved_filename)
+                    msg = ''
+                    if (type == "standard" or type == "autokey"):
+                        f = open(saved_filename, "r")
+                        msg = f.read()
+                        f.close()
+                    else:
+                        f = open(saved_filename, "rb")
+                        msg = f.read()
+                        f.close()
+
                     result = vigenere_cipher(msg, key, operation, type)
-                    f = open(saved_output, "wb")
-                    f.write(result['result'])
-                    f.close()
-                    result['result'] = sp.ASCIItoString(result['result'])
+                    saved_output = os.path.join(app.config['OUTPUT_FOLDER'], nameFile)
+                    if (type == "standard" or type == "autokey"):
+                        f = open(saved_output, "w")
+                        f.write(result['result'])
+                        f.close()
+                    else:
+                        f = open(saved_output, "wb")
+                        f.write(result['result'])
+                        f.close()
+
+                    return render_template("vigenere.html", result=result['result'], type=type, input_method=input_method, filename=nameFile)
                 else:
-                    result = vigenere_cipher(msg, key, operation, type)
-                    f = open(saved_output, "w")
-                    f.write(result['result'])
+                    flash("Please fill all the fields!")
+                    return render_template("vigenere.html")
+            elif input_method == "manual":
+                msg = request.form['msg']
+                if operation and type and input_method and msg and key:
+                    date = datetime.datetime.utcnow().strftime('%Y%m%d-%H%M%S%f')[:-3]
+                    nameFile = f"vigenere_{operation}_{type}_{input_method}_{date}.txt"
+                    saved_filename = os.path.join(app.config['INPUT_FOLDER'], nameFile)
+                    f = open(saved_filename, "w")
+                    f.write(msg)
                     f.close()
 
-                return render_template("vigenere.html", result=result['result'], type=type, input_method=input_method, filename=nameFile)
-            else:
-                flash("Please fill all the fields!")
-                return render_template("vigenere.html")        
+                    saved_output = os.path.join(app.config['OUTPUT_FOLDER'], nameFile)
+                    if type=="extended":
+                        msg = bytes(sp.stringToASCII(msg))
+                        result = vigenere_cipher(msg, key, operation, type)
+                        f = open(saved_output, "wb")
+                        f.write(result['result'])
+                        f.close()
+                        result['result'] = sp.ASCIItoString(result['result'])
+                    else:
+                        result = vigenere_cipher(msg, key, operation, type)
+                        f = open(saved_output, "w")
+                        f.write(result['result'])
+                        f.close()
+
+                    return render_template("vigenere.html", result=result['result'], type=type, input_method=input_method, filename=nameFile)
+                else:
+                    flash("Please fill all the fields!")
+                    return render_template("vigenere.html")
+        except Exception as e:
+            flash(f"Error: {repr(e)}")
+            return render_template("vigenere.html")
     else:
         return render_template("vigenere.html")
+    return render_template("vigenere.html")
 
 
 @app.route('/affine', methods=['GET', 'POST'])
 def affine():
     if request.method == 'POST':
-        print("1")
-        operation = request.form['operation']
-        input_method = request.form['input_method'] 
-        msg = request.form['msg']
-        key_m = int(request.form['key_m'])
-        key_b = int(request.form['key_b'])
-        n_char = int(request.form['n_char'])
+        try:
+            operation = request.form['operation']
+            input_method = request.form['input_method']
+            key_m = request.form['key_m']
+            key_b = request.form['key_b']
+            n_char = request.form['n_char']
 
-        result = affine_cipher(msg, key_m, key_b, operation, n_char)
-        print(result)
-        return render_template("affine.html", result=result)
+            if input_method == "file":
+                file = request.files['msg']
+                if file.filename and operation and input_method and key_m and key_b and n_char:
+                    filename = secure_filename(file.filename)
+                    key_m = int(key_m)
+                    key_b = int(key_b)
+                    n_char = int(n_char)
+
+                    if n_char == 26 and not filename.lower().endswith(".txt"):
+                        flash("Please input a .txt file!")
+                        return render_template("affine.html")
+
+                    extension = ""
+                    if '.' in filename:
+                        extension = "." + filename.split('.')[-1]
+
+                    date = datetime.datetime.utcnow().strftime('%Y%m%d-%H%M%S%f')[:-3]
+                    nameFile = f"affine_{operation}_{input_method}_{date}{extension}"
+                    saved_filename = os.path.join(app.config['INPUT_FOLDER'], nameFile)
+                    file.save(saved_filename)
+                    msg = ''
+                    if n_char == 26:
+                        f = open(saved_filename, "r")
+                        msg = f.read()
+                        f.close()
+                    else:
+                        f = open(saved_filename, "rb")
+                        msg = f.read()
+                        f.close()
+
+                    result = affine_cipher(msg, key_m, key_b, operation, n_char)
+                    if 'error' in result:
+                        flash(result['error'])
+                        return render_template("affine.html")
+                    saved_output = os.path.join(app.config['OUTPUT_FOLDER'], nameFile)
+                    if n_char == 26:
+                        f = open(saved_output, "w")
+                        f.write(result['result'])
+                        f.close()
+                    else:
+                        f = open(saved_output, "wb")
+                        f.write(result['result'])
+                        f.close()
+
+                    return render_template("affine.html", result=result['result'], n_char=n_char, input_method=input_method, filename=nameFile)
+                else:
+                    flash("Please fill all the fields!")
+                    return render_template("affine.html")
+            elif input_method == "manual":
+                msg = request.form['msg']
+                if msg and operation and input_method and key_m and key_b and n_char:
+                    key_m = int(key_m)
+                    key_b = int(key_b)
+                    n_char = int(n_char)
+
+                    date = datetime.datetime.utcnow().strftime('%Y%m%d-%H%M%S%f')[:-3]
+                    nameFile = f"affine_{operation}_{input_method}_{date}.txt"
+                    saved_filename = os.path.join(app.config['INPUT_FOLDER'], nameFile)
+                    f = open(saved_filename, "w")
+                    f.write(msg)
+                    f.close()
+
+                    saved_output = os.path.join(app.config['OUTPUT_FOLDER'], nameFile)
+                    if n_char == 256:
+                        msg = bytes(sp.stringToASCII(msg))
+                        result = affine_cipher(msg, key_m, key_b, operation, n_char)
+                        if 'error' in result:
+                            flash(result['error'])
+                            return render_template("affine.html")
+                        f = open(saved_output, "wb")
+                        f.write(result['result'])
+                        f.close()
+                        result['result'] = sp.ASCIItoString(result['result'])
+                    else:
+                        result = affine_cipher(msg, key_m, key_b, operation, n_char)
+                        if 'error' in result:
+                            flash(result['error'])
+                            return render_template("affine.html")
+                        f = open(saved_output, "w")
+                        f.write(result['result'])
+                        f.close()
+
+                    return render_template("affine.html", result=result['result'], n_char=n_char, input_method=input_method, filename=nameFile)
+                else:
+                    flash("Please fill all the fields!")
+                    return render_template("affine.html")    
+        except Exception as e:
+            flash(f"Error: {repr(e)}")
+            return render_template("affine.html")
     else:
-        print("2")
         return render_template("affine.html")
+    return render_template("affine.html")
 
 @app.route('/playfair', methods=['GET', 'POST'])
 def playfair(): 
