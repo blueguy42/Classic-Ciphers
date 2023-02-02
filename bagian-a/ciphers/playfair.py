@@ -77,7 +77,7 @@ def cipher(text: str, key: str, operation=ENCRYPT) -> dict:
             else:
                 result.append(matrixKey[p1[0], p2[1]][0] +
                              matrixKey[p2[0], p1[1]][0])
-
+        result = ''.join(result)
     elif operation == DECRYPT:
         for pair in bigram:
             p1 = np.where(matrixKey == pair[0])
@@ -96,7 +96,7 @@ def cipher(text: str, key: str, operation=ENCRYPT) -> dict:
             else:
                 result.append(matrixKey[p1[0], p2[1]][0] +
                              matrixKey[p2[0], p1[1]][0])
-            result = result.lower()
+        result = (''.join(result)).lower()
 
     
-    return {'operation': operation, 'key': matrixKey, 'text': text, 'text bigram': ' '.join(bigram), 'result': ''.join(result)}
+    return {'operation': operation, 'key': matrixKey, 'text': text, 'text bigram': ' '.join(bigram), 'result': result}

@@ -14,7 +14,7 @@ def cipher(text: str, key: str, size: int, operation=ENCRYPT) -> dict:
     if not sp.isAlphabet(key):
         return {'error': 'Key must only contain alphabetical characters.'}
     if len(key) != size*size:
-        return {'error': f'Key must be a square matrix with size {size}x{size}.'}
+        return {'error': f'Key must have length {size*size}.'}
 
     text = sp.stringToAlphabet(text)
     lenText = len(text)

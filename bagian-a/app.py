@@ -25,7 +25,7 @@ app.config['MAX_CONTENT_LENGTH'] = 120 * 1024 * 1024
 
 @app.route("/")
 def home():
-    return render_template("home.html")
+    return redirect(url_for('vigenere'))
 
 @app.route('/input/<filename>')
 def display_input(filename):
@@ -82,7 +82,7 @@ def vigenere():
                         f.write(result['result'])
                         f.close()
 
-                    return render_template("vigenere.html", result=result['result'], type=type, input_method=input_method, filename=nameFile)
+                    return render_template("vigenere.html", result=result['result'], type=type, filename=nameFile)
                 else:
                     flash("Please fill all the fields!")
                     return render_template("vigenere.html")
@@ -110,7 +110,7 @@ def vigenere():
                         f.write(result['result'])
                         f.close()
 
-                    return render_template("vigenere.html", result=result['result'], type=type, input_method=input_method, filename=nameFile)
+                    return render_template("vigenere.html", result=result['result'], type=type, filename=nameFile)
                 else:
                     flash("Please fill all the fields!")
                     return render_template("vigenere.html")
@@ -149,7 +149,7 @@ def affine():
                         extension = "." + filename.split('.')[-1]
 
                     date = datetime.datetime.utcnow().strftime('%Y%m%d-%H%M%S%f')[:-3]
-                    nameFile = f"affine_{operation}_{input_method}_{date}{extension}"
+                    nameFile = f"affine_{operation}_{n_char}_{input_method}_{date}{extension}"
                     saved_filename = os.path.join(app.config['INPUT_FOLDER'], nameFile)
                     file.save(saved_filename)
                     msg = ''
@@ -176,7 +176,7 @@ def affine():
                         f.write(result['result'])
                         f.close()
 
-                    return render_template("affine.html", result=result['result'], n_char=n_char, input_method=input_method, filename=nameFile)
+                    return render_template("affine.html", result=result['result'], n_char=n_char, filename=nameFile)
                 else:
                     flash("Please fill all the fields!")
                     return render_template("affine.html")
@@ -188,7 +188,7 @@ def affine():
                     n_char = int(n_char)
 
                     date = datetime.datetime.utcnow().strftime('%Y%m%d-%H%M%S%f')[:-3]
-                    nameFile = f"affine_{operation}_{input_method}_{date}.txt"
+                    nameFile = f"affine_{operation}_{n_char}_{input_method}_{date}.txt"
                     saved_filename = os.path.join(app.config['INPUT_FOLDER'], nameFile)
                     f = open(saved_filename, "w")
                     f.write(msg)
@@ -214,7 +214,7 @@ def affine():
                         f.write(result['result'])
                         f.close()
 
-                    return render_template("affine.html", result=result['result'], n_char=n_char, input_method=input_method, filename=nameFile)
+                    return render_template("affine.html", result=result['result'], n_char=n_char, filename=nameFile)
                 else:
                     flash("Please fill all the fields!")
                     return render_template("affine.html")    
@@ -228,34 +228,152 @@ def affine():
 @app.route('/playfair', methods=['GET', 'POST'])
 def playfair(): 
     if request.method == 'POST':
-        print("1")
-        operation = request.form['operation']
-        input_method = request.form['input_method']
-        msg = request.form['msg']
-        key = request.form['key']
+        try:
+            operation = request.form['operation']
+            input_method = request.form['input_method']
+            key = request.form['key']
 
-        result = playfair_cipher(msg, key, operation)
-        print(result)
-        return render_template("playfair.html", result=result)
+            if input_method == "file":
+                file = request.files['msg']
+                if file.filename and operation and input_method and key:
+                    filename = secure_filename(file.filename)
+
+                    if not filename.lower().endswith(".txt"):
+                        flash("Please input a .txt file!")
+                        return render_template("playfair.html")
+
+                    extension = ""
+                    if '.' in filename:
+                        extension = "." + filename.split('.')[-1]
+
+                    date = datetime.datetime.utcnow().strftime('%Y%m%d-%H%M%S%f')[:-3]
+                    nameFile = f"playfair_{operation}_{input_method}_{date}{extension}"
+                    saved_filename = os.path.join(app.config['INPUT_FOLDER'], nameFile)
+                    file.save(saved_filename)
+                    msg = ''
+
+                    f = open(saved_filename, "r")
+                    msg = f.read()
+                    f.close()
+
+                    result = playfair_cipher(msg, key, operation)
+                    saved_output = os.path.join(app.config['OUTPUT_FOLDER'], nameFile)
+
+                    f = open(saved_output, "w")
+                    f.write(result['result'])
+                    f.close()
+
+                    return render_template("playfair.html", result=result['result'], filename=nameFile)
+                else:
+                    flash("Please fill all the fields!")
+                    return render_template("playfair.html")
+            elif input_method == "manual":
+                msg = request.form['msg']
+                if msg and operation and input_method and key:
+                    date = datetime.datetime.utcnow().strftime('%Y%m%d-%H%M%S%f')[:-3]
+                    nameFile = f"playfair_{operation}_{input_method}_{date}.txt"
+                    saved_filename = os.path.join(app.config['INPUT_FOLDER'], nameFile)
+                    f = open(saved_filename, "w")
+                    f.write(msg)
+                    f.close()
+
+                    saved_output = os.path.join(app.config['OUTPUT_FOLDER'], nameFile)
+                    result = playfair_cipher(msg, key, operation)
+                    saved_output = os.path.join(app.config['OUTPUT_FOLDER'], nameFile)
+
+                    f = open(saved_output, "w")
+                    f.write(result['result'])
+                    f.close()
+
+                    return render_template("playfair.html", result=result['result'], filename=nameFile)
+                else:
+                    flash("Please fill all the fields!")
+                    return render_template("playfair.html")    
+        except Exception as e:
+            flash(f"Error: {repr(e)}")
+            return render_template("playfair.html")
     else:
-        print("2")
         return render_template("playfair.html")
+    return render_template("playfair.html")
 
 @app.route('/hill', methods=['GET', 'POST'])
 def hill():
     if request.method == 'POST':
-        print("1")
-        operation = request.form['operation']
-        input_method = request.form['input_method'] 
-        msg = request.form['msg']
-        key= request.form['key']
-        size = int(request.form['size'])
+        try:
+            operation = request.form['operation']
+            input_method = request.form['input_method']
+            key = request.form['key']
+            size = request.form['size']
 
-        result = hill_cipher(msg, key, size, operation)
-        print(result)
-        return render_template("hill.html", result=result)
+            if input_method == "file":
+                file = request.files['msg']
+                if file.filename and operation and input_method and key and size:
+                    filename = secure_filename(file.filename)
+                    size = int(size)
+
+                    if not filename.lower().endswith(".txt"):
+                        flash("Please input a .txt file!")
+                        return render_template("hill.html")
+
+                    extension = ""
+                    if '.' in filename:
+                        extension = "." + filename.split('.')[-1]
+
+                    date = datetime.datetime.utcnow().strftime('%Y%m%d-%H%M%S%f')[:-3]
+                    nameFile = f"hill_{operation}_{input_method}_{date}{extension}"
+                    saved_filename = os.path.join(app.config['INPUT_FOLDER'], nameFile)
+                    file.save(saved_filename)
+                    msg = ''
+                    
+                    f = open(saved_filename, "r")
+                    msg = f.read()
+                    f.close()
+
+                    result = hill_cipher(msg, key, size, operation)
+                    if 'error' in result:
+                        flash(result['error'])
+                        return render_template("hill.html")
+                    saved_output = os.path.join(app.config['OUTPUT_FOLDER'], nameFile)
+
+                    f = open(saved_output, "w")
+                    f.write(result['result'])
+                    f.close()
+
+                    return render_template("hill.html", result=result['result'], filename=nameFile)
+                else:
+                    flash("Please fill all the fields!")
+                    return render_template("hill.html")
+            elif input_method == "manual":
+                msg = request.form['msg']
+                if msg and operation and input_method and key and size:
+                    size = int(size)
+
+                    date = datetime.datetime.utcnow().strftime('%Y%m%d-%H%M%S%f')[:-3]
+                    nameFile = f"hill_{operation}_{input_method}_{date}.txt"
+                    saved_filename = os.path.join(app.config['INPUT_FOLDER'], nameFile)
+                    f = open(saved_filename, "w")
+                    f.write(msg)
+                    f.close()
+
+                    saved_output = os.path.join(app.config['OUTPUT_FOLDER'], nameFile)
+
+                    result = hill_cipher(msg, key, size, operation)
+                    if 'error' in result:
+                        flash(result['error'])
+                        return render_template("hill.html")
+                    f = open(saved_output, "w")
+                    f.write(result['result'])
+                    f.close()
+
+                    return render_template("hill.html", result=result['result'], filename=nameFile)
+                else:
+                    flash("Please fill all the fields!")
+                    return render_template("hill.html")    
+        except Exception as e:
+            flash(f"Error: {repr(e)}")
+            return render_template("hill.html")
     else:
-        print("2")
+        return render_template("hill.html")
     return render_template("hill.html")
     
 
