@@ -38,9 +38,13 @@
                 {% with messages = get_flashed_messages() %}
                     {% if messages %}
                         <ul style="list-style-type: none; text-align: center; padding: 0">
-                        {% for message in messages %}
-                        <li>{{ message }}</li>
-                        {% endfor %}
+                            {% for message in messages %}
+                                {% if message|length > 50 %}
+                                    <li>{{ message[:50] }}...</li>
+                                {% else %}
+                                    <li>{{ message }}</li>
+                                {% endif %}
+                            {% endfor %}
                         </ul>
                     {% endif %}
                 {% endwith %}
