@@ -64,3 +64,20 @@ type.forEach((item) => {
         }
     });
 });
+
+const nChar = document.getElementsByName("n_char");
+nChar.forEach((item) => {
+    item.addEventListener("change", (e) => {
+        if (e.target.value == "26") {
+            document.getElementById("input-file-container").style.display = "block";
+            document.getElementById("input-manual-container").style.display = "block";
+        } else {
+            document.getElementById("input-file-container").style.display = "block";
+            document.getElementById("input-manual-container").style.display = "none";
+            document.getElementById("file").checked = true;
+            document.getElementById("manual").checked = false;
+            msg_file.style.display = 'block';
+            msg_text.style.display = 'none';
+        }
+    });
+});

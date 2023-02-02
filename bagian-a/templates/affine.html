@@ -22,17 +22,6 @@
         <form action="{{ url_for('affine')}}" method="POST" enctype="multipart/form-data">
             <div style="display: flex; flex-direction: column; row-gap: 16px;">
                 {% include 'components/operation.html' %}
-                {% include 'components/input-msg.html' %}
-                <div class="affine-key">
-                    <div>
-                        <h4>Key M</h4>
-                        <input type="text" name="key_m" id="key_m" class="key">
-                    </div>
-                    <div>
-                        <h4>Key B</h4>
-                        <input type="text" name="key_b" id="key_b" class="key">
-                    </div>
-                </div>
                 <div>
                     <h4>Type of Character</h4>
                     <div style="display: flex; column-gap: 16px;">
@@ -46,7 +35,18 @@
                         </div>
                     </div>
                 </div>
-                <input type="submit" value="Submit">
+                {% include 'components/input-msg.html' %}
+                <div class="affine-key">
+                    <div>
+                        <h4>Key M</h4>
+                        <input type="number" name="key_m" id="key_m" class="key">
+                    </div>
+                    <div>
+                        <h4>Key B</h4>
+                        <input type="number" name="key_b" id="key_b" class="key">
+                    </div>
+                </div>
+                <input type="submit" value="Submit" class="button">
                 {% with messages = get_flashed_messages() %}
                     {% if messages %}
                         <ul style="list-style-type: none; text-align: center; padding: 0">
@@ -65,19 +65,30 @@
             <h3>OUTPUT</h3>
             <hr />
             {% if n_char==26 %}
+                {% include 'components/show-style.html' %}
                 <div style="display: flex; flex-direction: column; row-gap: 16px;">
                     <div>
-                        <p>{{ result }}</p>
-                        <!-- di python bisa gini " ".join(value[i:i+5] for i in range(0, len(value), 5))) -->
-                        <!-- <p>
-                        {% for i in range(0, value|length, 5) %}
-                            {{ value[i:i+5] }}
-                        {% endfor %}
-                        </p> -->
+                        <div id="without-space-result" class="show-result" style="word-break: break-all;">
+                            <p>{{ result }}</p>
+                        </div>
+                        <div id="group-of-5-result" class="show-result" style="display: none;">
+                            <p>
+                                {% for i in range(0, result|length, 5) %}
+                                    {{ result[i:i+5] }}
+                                {% endfor %}
+                            </p>
+                        </div>
                     </div>
                 </div>
             {% endif %}
-            <a href="{{ url_for('display_output', filename=filename) }}" download>Download Result</a>
+            <div style="display: flex; flex-direction: column; margin-top: 16px;">
+                <a href="{{ url_for('display_output', filename=filename) }}" download>
+                    <button class="button">
+                        <i class="fa fa-download"></i>
+                        Download Result
+                    </button>
+                </a>
+            </div>
     {% endif %}
 
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
