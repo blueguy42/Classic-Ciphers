@@ -1,6 +1,6 @@
 # Tugas 1 IF4020 Kriptografi
 
-Aplikasi Classic Cipher dan Kriptanilisis
+Aplikasi Classic Cipher dan Kriptanalisis
 
 ## Informasi Umum
 Pada Tugas 1 IF4020 Kriptografi kali ini kita diminta untuk membuat sebuah website yang dapat melakukan enkripsi dan dekripsi menggunakan algoritma Vigenere, Affine, Playfair, dan Hill Cipher. Selain itu, juga dilakukan kriptanalisis pada cipherteks menggunakan metode analisis frekuensi abjad tunggal, metode kasiski, metode analisis frekuensi bigram untuk Playfair Cipher, dan metode known-plaintext attack untuk Hill Cipher.
